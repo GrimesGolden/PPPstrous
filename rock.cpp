@@ -8,6 +8,8 @@ inline void keep_window_open() {char ch; cin>>ch; }
 
 // It's a rock paper scissors game, but it doesn't use random, It uses vectors.
 
+// To make it even more 'random' add a new vector of 11 ints to the set list and increase the size of data_sets. 
+
 // These vectors store all the computers selections. 
 vector<string> random_set_0 = {"0", "1", "0", "2", "0", "1", "2", "2", "0", "2", "1"};
 vector<string> set_1 = {"1", "1", "1", "1", "2", "2", "2", "0", "0", "0", "0"};
@@ -15,6 +17,7 @@ vector<string> set_2 = {"1", "0", "2", "2", "2", "1", "0", "1", "0", "1", "0"};
 vector<string> set_3 = {"1", "1", "2", "2", "1", "1", "2", "2", "1", "1", "2"};
 vector<string> set_4 = {"2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "0"};
 vector<string> set_5 = {"1", "0", "0", "1", "2", "0", "1", "1", "0", "1", "2"};
+
 // This vector stores all the sets of selections. 
 vector<vector<string>> data_sets = {random_set_0, set_1, set_2, set_3, set_4, set_5}; 
 
@@ -25,6 +28,9 @@ int t = 0; // Tie is actually a key word. So I just use the letter t.
 int rock_selected = 0;
 int paper_selected = 0;
 int scissors_selected = 0;
+
+int total_rounds = 0;
+double total_playthroughs = 0;
 
 bool verify_choice(string user_choice){
 // Verifies if the user selected 0, 1 or 2 as a string.
@@ -116,6 +122,8 @@ void increment_scores(int user_choice){
     default:
         break;
     }
+
+    total_rounds++;
 }
 
 void store_outcome(int outcome){
@@ -196,10 +204,25 @@ int rock_paper_scissors(int comp_choice, int user_choice){
     }
 }
 
-void exit_protocol(int turn){
+void exit_protocol(){
+
+    total_playthroughs = (double(total_rounds) / 10.0);
+    
     // Just prints some messages and the global variables. 
     cout << "Thanks for playing\n";
-    cout << "You played " << (turn) << " turns.\n";
+    if(total_rounds == 1){
+        cout << "You played " << total_rounds << " round.\n";
+        cout << "Across " << total_playthroughs << " Playthroughs\n";
+    }
+    if(total_playthroughs == 1){
+        cout << "You played " << total_rounds << " rounds.\n";
+        cout << "Across " << total_playthroughs << " Playthrough\n";
+    }
+    else if (total_rounds != 1 && total_playthroughs != 1){
+        cout << "You played " << total_rounds << " rounds.\n";
+        cout << "Across " << total_playthroughs << " Playthroughs\n";
+    }
+
     cout << "Total wins: " << win << "\nTotal losses: " << loss << "\nTotal ties: " << t << "\n";
     cout << "You picked rock: " << rock_selected << " times!\n";
     cout << "You picked paper: " << paper_selected << " times!\n";
@@ -215,7 +238,7 @@ int main()
     bool quit = false;
     string user_input;
     int turn_number = 0;
-    int play_through = 0;
+    int play_through = 0; // CHANGE BUG DETECTION should be zero
 
     // Strings to hold selection.
     string comp_string; 
@@ -254,20 +277,27 @@ int main()
     
             // Is the turn number beyond the amount of choices?
             if(turn_number >= (choices.size() - 1)){
-                // We can't play anymore so quit.
+                // We have selected every string option in the first vector of computer choices.
+                // So we have ran out of data points.
+                // Load in a new vector. 
                 cout << "You have exhausted the computers choices...\n";
                 cout << "Loading new data set.\n";
 
-                if(play_through <= data_sets.size()){
-                    // magic number is the number of data sets we have (size - 1))
+                if(play_through < (data_sets.size() - 1)){
+                    //the number of data sets we have (size - 1))
+                    // If we have looped through this while loop, less times than there are data sets in the entire set of all vectors.
+                    // Increment the playthroughs.
                     ++play_through; 
                 }else{
+                    // Set them back to zero.
                     play_through = 0;
                 }
+                // Set the rounds back to zero. This is the end of a round.
                 turn_number = 0;
 
                 // re-load in the random data sets. 
-                // A vector of strings representing "user choices"; 
+                // A vector of strings representing "computer choices"; 
+                // Basically load in a new "computer", a new set of computer selections. 
                 choices = data_sets[play_through];
 
 
@@ -304,6 +334,6 @@ int main()
     }
     
     // End of while loop. 
-        exit_protocol(turn_number);
+        exit_protocol();
         return 0;
 }
