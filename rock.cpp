@@ -25,6 +25,23 @@ bool verify_choice(string user_choice){
     }
 }
 
+string print_outcome(int outcome){
+    switch (outcome)
+    {
+    case 0:
+        return "You win!\n";
+        break;
+    case 1:
+        return "You lose!\n";
+        break;
+    case 2:
+        return "It's a tie!\n";
+        break;
+    default:
+        return "It's an error!\n";
+        break;
+    }
+}
 int return_selection_int(string input_string){
     // Returns an integer to represent the selection.
     if(input_string == "0"){
@@ -131,10 +148,22 @@ int main()
     // Integers to hold selection. 
     int comp_int;
     int user_int;
+    // Int to hold scoring variables.
+    int outcome;
+    int win = 0;
+    int loss = 0;
+    int tie = 0;
+    int rock_selected = 0;
+    int paper_selected = 0;
+    int scissors_selected = 0;
+    
 
 
     while(!quit){
-        cout << "Welcome to rock, paper scissors\n";
+        if(turn_number == 0){
+            cout << "Welcome to rock, paper scissors\n";
+        }
+
         cout << "For rock press 0, for paper press 1, for scissors press 2 or q to quit\n>>";
         cin >> user_input;
 
@@ -154,7 +183,8 @@ int main()
             // If the the input is correct, and we havent used up all the computers turns. 
             } else{
                 // User string (users selection choice) is printed
-                cout << "Thanks for selecting " << user_string << "\n";
+                cout << "\n\n*********************\n";
+                cout << "You selected " << user_string << "\n";
                 // Increment turn number.
                 ++turn_number;
                 // Computers selection is made through use of int and string.
@@ -165,7 +195,39 @@ int main()
                 cout << "Computer has selected " << comp_string << "\n";
             
                 // Play game
-                rock_paper_scissors(comp_int, user_int);
+                outcome = rock_paper_scissors(comp_int, user_int);
+                cout << print_outcome(outcome);
+                cout << "End of round: " << turn_number << "\n";
+
+                // Store scores
+                switch (user_int)
+                {
+                case 0:
+                    rock_selected++;
+                    break;
+                case 1:
+                    paper_selected++;
+                    break;
+                case 2:
+                    scissors_selected++;
+                    break;
+                default:
+                    break;
+                }
+
+                switch(outcome){
+                    case 0:
+                        win++;
+                        break;
+                    case 1:
+                        loss++;
+                        break;
+                    case 2:
+                        tie++;
+                        break;
+                    default:
+                        break;
+                }
             }
 
         } else if(user_input == "q"){
@@ -176,6 +238,12 @@ int main()
         }
     }
     // End of while loop. 
-        cout << "Goodbye";
+        cout << "Thanks for playing\n";
+        cout << "You played " << (turn_number) << " turns.\n";
+        cout << "Total wins: " << win << "\nTotal losses: " << loss << "\nTotal ties: " << tie << "\n";
+        cout << "You picked rock: " << rock_selected << " times!\n";
+        cout << "You picked paper: " << paper_selected << " times!\n";
+        cout << "You picked scissors: " << scissors_selected << " times!\n";
+        cout << "Goodbye!\n";
         return 0;
 }
