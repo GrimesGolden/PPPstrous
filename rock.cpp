@@ -6,18 +6,29 @@
 using namespace std;
 inline void keep_window_open() {char ch; cin>>ch; }
 
-vector<string> computers_choice = {"0", "1", "0", "2", "0", "1", "2", "2", "0", "2", "1"};
+// It's a rock paper scissors game, but it doesn't use random, It uses vectors.
 
+// These vectors store all the computers selections. 
+vector<string> random_set_0 = {"0", "1", "0", "2", "0", "1", "2", "2", "0", "2", "1"};
+vector<string> set_1 = {"1", "1", "1", "1", "2", "2", "2", "0", "0", "0", "0"};
+vector<string> set_2 = {"1", "0", "2", "2", "2", "1", "0", "1", "0", "1", "0"};
+vector<string> set_3 = {"1", "1", "2", "2", "1", "1", "2", "2", "1", "1", "2"};
+vector<string> set_4 = {"2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "0"};
+vector<string> set_5 = {"1", "0", "0", "1", "2", "0", "1", "1", "0", "1", "2"};
+// This vector stores all the sets of selections. 
+vector<vector<string>> data_sets = {random_set_0, set_1, set_2, set_3, set_4, set_5}; 
+
+// These global variables store values from entire playthroughs. (While loop)
 int win = 0;
 int loss = 0;
-int t = 0;
+int t = 0; // Tie is actually a key word. So I just use the letter t. 
 int rock_selected = 0;
 int paper_selected = 0;
 int scissors_selected = 0;
 
 bool verify_choice(string user_choice){
-    // Verify if the user selected 0,1,2.
-    // Returns false otherwise. 
+// Verifies if the user selected 0, 1 or 2 as a string.
+// Because I took input as a string, this is my way of validating that.
     if(user_choice == "0"){
         return true;
     }
@@ -33,6 +44,7 @@ bool verify_choice(string user_choice){
 }
 
 string print_outcome(int outcome){
+// This prints the outcome of the game, did the user win, lose or tie.
     switch (outcome)
     {
     case 0:
@@ -49,8 +61,11 @@ string print_outcome(int outcome){
         break;
     }
 }
+
 int return_selection_int(string input_string){
-    // Returns an integer to represent the selection.
+    // Takes the input that was a string input from the user, or a string variable taken from the computers choice vectors.
+    // Turns it into an integer. It's purpose is simply to turn the string into an index. Could I have just converted string to int?
+    // Probly.....
     if(input_string == "0"){
         return 0;
     }
@@ -66,6 +81,7 @@ int return_selection_int(string input_string){
 }
 
 string return_selection(int selection){
+    // Now takes an int, and returns string specifying which object.
     switch (selection)
     {
     case 0:
@@ -84,6 +100,8 @@ string return_selection(int selection){
 }
 
 void increment_scores(int user_choice){
+// From the input of the users choice, increments the selections accordingly.
+// This allows us to track how many times the user picked rock, paper or scissors.
     switch (user_choice)
     {
     case 0:
@@ -101,6 +119,7 @@ void increment_scores(int user_choice){
 }
 
 void store_outcome(int outcome){
+// We store the outcome, win, lose or tie, into global variables.
     switch(outcome)
     {
     case 0:
@@ -118,20 +137,23 @@ void store_outcome(int outcome){
 }
 
 int rock_paper_scissors(int comp_choice, int user_choice){
+    // This is the most important function.
+    // It provides the actual functionality of the game itself.
+    // Using two nested switch statements, we calculate the outcome of the user v computer round.
     switch (user_choice)
     // 0 = win, 1 = lose 2 = tie
     {
-    case 0: // its a rock:
+    case 0: // User picked rock:
         switch (comp_choice)
         {
-        case 0:
+        case 0: // And comp picked rock
             return 2; //tie
             break;
         case 1:
-            return 1; // lose 
+            return 1; // User loses because comp 'picked' paper. Paper beats rock.... etc.
             break;
         case 2:
-            return 0; // wim
+            return 0; // win
             break;
         default:
             return -1;
@@ -175,6 +197,7 @@ int rock_paper_scissors(int comp_choice, int user_choice){
 }
 
 void exit_protocol(int turn){
+    // Just prints some messages and the global variables. 
     cout << "Thanks for playing\n";
     cout << "You played " << (turn) << " turns.\n";
     cout << "Total wins: " << win << "\nTotal losses: " << loss << "\nTotal ties: " << t << "\n";
@@ -192,6 +215,7 @@ int main()
     bool quit = false;
     string user_input;
     int turn_number = 0;
+    int play_through = 0;
 
     // Strings to hold selection.
     string comp_string; 
@@ -202,9 +226,19 @@ int main()
     // Int to hold scoring variables.
     int outcome;
 
+    // load in the random data sets. 
+    // A vector of strings representing "user choices"; 
+    vector<string> choices;
+
+    
+
+
 
     while(!quit){
+
+
         if(turn_number == 0){
+            choices = data_sets[play_through];
             cout << "Welcome to rock, paper scissors\n";
         }
 
@@ -219,10 +253,23 @@ int main()
             user_string = return_selection(user_int);
     
             // Is the turn number beyond the amount of choices?
-            if(turn_number >= (computers_choice.size() - 1)){
+            if(turn_number >= (choices.size() - 1)){
                 // We can't play anymore so quit.
                 cout << "You have exhausted the computers choices...\n";
-                quit = true;
+                cout << "Loading new data set.\n";
+
+                if(play_through <= data_sets.size()){
+                    // magic number is the number of data sets we have (size - 1))
+                    ++play_through; 
+                }else{
+                    play_through = 0;
+                }
+                turn_number = 0;
+
+                // re-load in the random data sets. 
+                // A vector of strings representing "user choices"; 
+                choices = data_sets[play_through];
+
 
             // If the the input is correct, and we havent used up all the computers turns. 
             } else{
@@ -234,7 +281,7 @@ int main()
                 ++turn_number;
                 // Computers selection is made through use of int and string.
 
-                comp_int = return_selection_int(computers_choice[turn_number]);
+                comp_int = return_selection_int(choices[turn_number]);
                 comp_string = return_selection(comp_int);
                 // Computers choice is read out.
                 cout << "Computer has selected " << comp_string << "\n";
@@ -245,23 +292,6 @@ int main()
                 cout << print_outcome(outcome);
                 cout << "End of round: " << turn_number << "\n";
 
-                // Store scores
-                /*
-                switch (user_int)
-                {
-                case 0:
-                    rock_selected++;
-                    break;
-                case 1:
-                    paper_selected++;
-                    break;
-                case 2:
-                    scissors_selected++;
-                    break;
-                default:
-                    break;
-                }
-                */
                increment_scores(user_int);
             }
     
