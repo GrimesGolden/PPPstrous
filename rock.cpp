@@ -8,6 +8,13 @@ inline void keep_window_open() {char ch; cin>>ch; }
 
 vector<string> computers_choice = {"0", "1", "0", "2", "0", "1", "2", "2", "0", "2", "1"};
 
+int win = 0;
+int loss = 0;
+int t = 0;
+int rock_selected = 0;
+int paper_selected = 0;
+int scissors_selected = 0;
+
 bool verify_choice(string user_choice){
     // Verify if the user selected 0,1,2.
     // Returns false otherwise. 
@@ -76,6 +83,40 @@ string return_selection(int selection){
     }
 }
 
+void increment_scores(int user_choice){
+    switch (user_choice)
+    {
+    case 0:
+        rock_selected++;
+        break;
+    case 1:
+        paper_selected++;
+        break;
+    case 2:
+        scissors_selected++;
+        break;
+    default:
+        break;
+    }
+}
+
+void store_outcome(int outcome){
+    switch(outcome)
+    {
+    case 0:
+        ++win;
+        break;
+    case 1:
+        ++loss;
+        break;
+    case 2:
+        ++t;
+        break;
+    default:
+        break;
+    }
+}
+
 int rock_paper_scissors(int comp_choice, int user_choice){
     switch (user_choice)
     // 0 = win, 1 = lose 2 = tie
@@ -133,6 +174,16 @@ int rock_paper_scissors(int comp_choice, int user_choice){
     }
 }
 
+void exit_protocol(int turn){
+    cout << "Thanks for playing\n";
+    cout << "You played " << (turn) << " turns.\n";
+    cout << "Total wins: " << win << "\nTotal losses: " << loss << "\nTotal ties: " << t << "\n";
+    cout << "You picked rock: " << rock_selected << " times!\n";
+    cout << "You picked paper: " << paper_selected << " times!\n";
+    cout << "You picked scissors: " << scissors_selected << " times!\n";
+    cout << "Goodbye!\n";
+}
+
 int main()
 {   
     // Exercise 10, play rock paper scissors, using a vector to simulate random. 
@@ -150,13 +201,6 @@ int main()
     int user_int;
     // Int to hold scoring variables.
     int outcome;
-    int win = 0;
-    int loss = 0;
-    int tie = 0;
-    int rock_selected = 0;
-    int paper_selected = 0;
-    int scissors_selected = 0;
-    
 
 
     while(!quit){
@@ -182,6 +226,7 @@ int main()
 
             // If the the input is correct, and we havent used up all the computers turns. 
             } else{
+
                 // User string (users selection choice) is printed
                 cout << "\n\n*********************\n";
                 cout << "You selected " << user_string << "\n";
@@ -196,10 +241,12 @@ int main()
             
                 // Play game
                 outcome = rock_paper_scissors(comp_int, user_int);
+                store_outcome(outcome);
                 cout << print_outcome(outcome);
                 cout << "End of round: " << turn_number << "\n";
 
                 // Store scores
+                /*
                 switch (user_int)
                 {
                 case 0:
@@ -214,22 +261,10 @@ int main()
                 default:
                     break;
                 }
-
-                switch(outcome){
-                    case 0:
-                        win++;
-                        break;
-                    case 1:
-                        loss++;
-                        break;
-                    case 2:
-                        tie++;
-                        break;
-                    default:
-                        break;
-                }
+                */
+               increment_scores(user_int);
             }
-
+    
         } else if(user_input == "q"){
             quit = true;
 
@@ -237,13 +272,8 @@ int main()
             cout << "Error incorrect selection, please try again.\n";
         }
     }
+    
     // End of while loop. 
-        cout << "Thanks for playing\n";
-        cout << "You played " << (turn_number) << " turns.\n";
-        cout << "Total wins: " << win << "\nTotal losses: " << loss << "\nTotal ties: " << tie << "\n";
-        cout << "You picked rock: " << rock_selected << " times!\n";
-        cout << "You picked paper: " << paper_selected << " times!\n";
-        cout << "You picked scissors: " << scissors_selected << " times!\n";
-        cout << "Goodbye!\n";
+        exit_protocol(turn_number);
         return 0;
 }
