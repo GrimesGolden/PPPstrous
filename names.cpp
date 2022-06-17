@@ -70,32 +70,44 @@ int main()
         i++;
     }
 
+    // Print a lil message
     cout << "************************************************\n";
-    cout << "Welcome to the name database.\n>>";
-    cout << "Enter a name to search: \n>>";
+    cout << "Welcome to the database.\n>>";
+    cout << "Enter a name or score to search, or '|' to exit. >>\n";
 
+    // While we recieve input...
     while(cin >> input){
 
         if(input == "|"){
+            //If the input is | then end program.
             break;
         } else if(isdigit(input[0])){
+            // If the input is a number. (starts with one at least..)
             for (int score : scores){
+                // Then output the scores that match, along with their index within the name vector (thus the name they are paired with).
                 if(stoi(input) == score){
-                    cout << "Matching score: " << score << "\n";
-                    cout << "Paired with name: " << names[track_score] << "\n";
+                    cout << "Score : " << score << "\n";
+                    cout << "Paired with name: " << names[track_score] << "\n>>";
                     found_score = true;
                 }
+                //Increment the itiration variable.
             track_score++;
             }
+            // Zero out the itiration variable here.
             track_score = 0;
+            // If we dont find the score output a message.
             if(!found_score){
-                cout << "Score not found.\n";
+                cout << "Score not found.\n>>";
             }
+            // Now set score to false because we are about to loop again, thus we have found no scores at the beginning of the loop. 
             found_score = false;
         } else{
+            // Else the input MUST be text. Because its not an int, so....
             for(string name : names){
+                // If the input matches a name
                 if(input == name){
-                    cout << "Matching name: " << name << "\n";
+                    // Similar operation as above
+                    cout << "Matching name: " << name << "\n>>";
                     found_name = true;
                 }
             }
@@ -105,5 +117,4 @@ int main()
             found_name = false;
         } // end else
     } // end while
-
 } // End main.
