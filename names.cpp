@@ -12,7 +12,9 @@ int main()
     string name;
     int score; 
     string input;
+
     int i = 0; //Used for itiration.
+    int track_score = 0; 
 
     bool found_score = false;
     bool found_name = false;
@@ -80,9 +82,12 @@ int main()
             for (int score : scores){
                 if(stoi(input) == score){
                     cout << "Matching score: " << score << "\n";
+                    cout << "Paired with name: " << names[track_score] << "\n";
                     found_score = true;
                 }
+            track_score++;
             }
+            track_score = 0;
             if(!found_score){
                 cout << "Score not found.\n";
             }
