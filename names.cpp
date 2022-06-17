@@ -14,6 +14,9 @@ int main()
     string input;
     int i = 0; //Used for itiration.
 
+    bool found_score = false;
+    bool found_name = false;
+
     cout << "Input your scores to be stored.\n";
     cout << "Please use the following format 'Name Score', for example: Jordan 23.\n";
     cout << "Or enter 'NoName 0' to terminate program.\n";
@@ -68,5 +71,34 @@ int main()
     cout << "************************************************\n";
     cout << "Welcome to the name database.\n>>";
     cout << "Enter a name to search: \n>>";
+
+    while(cin >> input){
+
+        if(input == "|"){
+            break;
+        } else if(isdigit(input[0])){
+            for (int score : scores){
+                if(stoi(input) == score){
+                    cout << "Matching score: " << score << "\n";
+                    found_score = true;
+                }
+            }
+            if(!found_score){
+                cout << "Score not found.\n";
+            }
+            found_score = false;
+        } else{
+            for(string name : names){
+                if(input == name){
+                    cout << "Matching name: " << name << "\n";
+                    found_name = true;
+                }
+            }
+            if(!found_name){
+                cout << "Name not found.\n";
+            }
+            found_name = false;
+        } // end else
+    } // end while
 
 } // End main.
