@@ -15,7 +15,7 @@ void error(string s1, string s2)
 }
 
 // Two vectors to to compare guesses against the mystery number.
-vector<int> hidden_numb = {1, 2, 3, 4};
+vector<int> hidden_numb = {};
 vector<int> user_guess = {}; 
 
 string check_guess(vector<int> guess)
@@ -53,16 +53,65 @@ bool guess_repeats(vector<int> guess){
     return repeats;
 }
 
+void load_number(vector<int> guess){
+    for(int i=0; i<4; i++)
+    {
+        guess.push_back((rand() % 9) + 1);
+    }
+}
+
 
 int main()
 {   
     
     string user_input = "";
+    
+    srand(time(0));
+    for(int i=0; i<4; i++)
+    {   
+        hidden_numb.push_back((rand() % 9) + 1);
+    }
+
+    cout << "BUG DETECTION: HIDDEN NUMB IS:";
+    for(int num : hidden_numb)
+    {
+        cout << num;
+    }
+    if(guess_repeats(hidden_numb)){
+        cout << "\nREPEATING NUMBERS DETECTED\n";
+        bool repeats = true;
+        while(repeats){
+            hidden_numb.clear();
+
+            for(int i=0; i<4; i++)
+            {   
+                hidden_numb.push_back((rand() % 9) + 1);
+            }
+
+            if(guess_repeats(hidden_numb)){
+                for(int i=0; i<4; i++)
+                {   
+                hidden_numb.push_back((rand() % 9) + 1);
+                }
+            }
+            else{
+                repeats = false;
+                break;
+            }
+        }
+    }
+    cout << "BUG DETECTION 2: HIDDEN NUMB IS:";
+    for(int num : hidden_numb)
+    {
+        cout << num;
+    }
+
+    
     // Store user input and output greeting,
     cout << "Welcome to the bulls and cows game!\n";
     cout << "Please input a set of (*NON-REPEATING*) four digits (0-9), for example 1234\n";
     cout << "Try to guess the mystery number! A match will output B for bull, non-match output C for cow";
-    cout << "Example: look for BBBB to win";
+    cout << "Example: look for BBBB to win\n";
     cout << "Good luck have fun!!!\n" << "_________________BULLS AND COWS 2022____________________________\n>>";
 
     while(cin >> user_input){
