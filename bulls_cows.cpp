@@ -53,11 +53,66 @@ bool guess_repeats(vector<int> guess){
     return repeats;
 }
 
-void load_number(vector<int> guess){
-    for(int i=0; i<4; i++)
-    {
-        guess.push_back((rand() % 9) + 1);
+void load_numb(){
+    // fills an int with random numbers;
+   for(int i=0; i<4; i++)
+    {   
+        hidden_numb.push_back((rand() % 9) + 1);
+    } 
+}
+
+void verify_numb(){
+    // Verifies the hidden number vector is free from repetitive digits.
+    if(guess_repeats(hidden_numb)){
+        // Does the vector repeat?
+        // It does. 
+        bool repeats = true;
+        while(repeats){
+            // As long as this vector contains repeating numbers...
+            // Empty it.
+            hidden_numb.clear();
+
+            // Refill it,
+            for(int i=0; i<4; i++)
+            {   
+                hidden_numb.push_back((rand() % 9) + 1);
+            }
+            
+            // If it still repeats, 
+            if(guess_repeats(hidden_numb)){
+                // Clear it and fill it again. 
+                hidden_numb.clear();
+                for(int i=0; i<4; i++)
+                {   
+                hidden_numb.push_back((rand() % 9) + 1);
+                }
+            }
+            else{
+                // If it doesnt repeat, then we are done.
+                // Get out of here.
+                repeats = false;
+                break;
+            }
+        }
     }
+}
+
+void bug_detection(){
+    cout << "BUG DETECTION: HIDDEN NUMB IS:";
+    for(int num : hidden_numb)
+    {
+        cout << num;
+    }
+    cout << "\n";
+}
+
+void print_greeting(){
+    cout << "Welcome to the bulls and cows game!\n";
+    cout << "Please input a set of (*NON-REPEATING*) four digits (0-9), for example 1234\n";
+    cout << "Try to guess the mystery number! A match will output B for bull, non-match output C for cow\n";
+    cout << "Example: look for BBBB to win\n";
+    cout << "At any time press E to erase hardrive.";
+    cout << "Good luck have fun!!!\n" << "_________________BULLS AND COWS 2022____________________________\n>>";
 }
 
 
@@ -66,55 +121,34 @@ int main()
     
     string user_input = "";
     
-    srand(time(0));
-    for(int i=0; i<4; i++)
-    {   
-        hidden_numb.push_back((rand() % 9) + 1);
-    }
+    // *******FILLING THE VECTOR WITH 4 NON REPEATING PSUEDO-RANDOM DIGITS 0-9***********
+    srand(time(0)); // SEED RANDOM.
+    load_numb(); // FILL VECTOR.
+    verify_numb(); // MAKE SURE IT CONTAINS NO REPEATS. 
 
-    cout << "BUG DETECTION: HIDDEN NUMB IS:";
-    for(int num : hidden_numb)
-    {
-        cout << num;
-    }
-    if(guess_repeats(hidden_numb)){
-        cout << "\nREPEATING NUMBERS DETECTED\n";
-        bool repeats = true;
-        while(repeats){
-            hidden_numb.clear();
-
-            for(int i=0; i<4; i++)
-            {   
-                hidden_numb.push_back((rand() % 9) + 1);
-            }
-
-            if(guess_repeats(hidden_numb)){
-                for(int i=0; i<4; i++)
-                {   
-                hidden_numb.push_back((rand() % 9) + 1);
-                }
-            }
-            else{
-                repeats = false;
-                break;
-            }
-        }
-    }
-    cout << "BUG DETECTION 2: HIDDEN NUMB IS:";
-    for(int num : hidden_numb)
-    {
-        cout << num;
-    }
+    
+    bug_detection();
 
     
     // Store user input and output greeting,
-    cout << "Welcome to the bulls and cows game!\n";
-    cout << "Please input a set of (*NON-REPEATING*) four digits (0-9), for example 1234\n";
-    cout << "Try to guess the mystery number! A match will output B for bull, non-match output C for cow";
-    cout << "Example: look for BBBB to win\n";
-    cout << "Good luck have fun!!!\n" << "_________________BULLS AND COWS 2022____________________________\n>>";
-
+    print_greeting();
+    cout << "Would you like to play?\n";
+    cout << "Enter Y to play or any key to destroy system 32.";
+    string start_game;
+    cin >> start_game;
+    if(start_game == "Y"){
+        cout << "LOADING GAME..\n";
+        cout << "ENTER GUESS>>";
+    }else{
+        cout << "SYSTEM 32 DELETED";
+        return 0;
+    }
     while(cin >> user_input){
+
+        if (user_input == "E"){
+            cout << "ERASING HARDRIVE";
+            return 0;
+        }
         // As long as there is constant input.
         // Verify that there is a length of 4.
         if(user_input.length() != 4){
@@ -148,13 +182,20 @@ int main()
                     // If all bulls then you won
                     // Otherwise print the standard format and clear the vector for a new guess.
                     if(check_guess(user_guess) == "BBBB"){
-                        cout << "WHAAAAAAAAT YOU WON!!!!!!OMGDGEGWGEGW\n";
-                        return 0;
+                        cout << "CONGRATULATIONS, YOU WON THE GAME.\n";
+                        hidden_numb.clear();
+                        load_numb();
+                        verify_numb();
+                        cout << "LOADING A NEW NUMBER.\n";
+                        cout << ">>";
+                        user_guess.clear();
                     }
-                    // If you reach this point you didnt win.
-                    // So output format and clear for next guess. 
-                    cout << check_guess(user_guess) << "\n";
-                    user_guess.clear();
+                    else{
+                        // If you reach this point you didnt win.
+                        // So output format and clear for next guess. 
+                        cout << check_guess(user_guess) << "\n" << ">>";
+                        user_guess.clear();
+                    }
                 }
 
         }
